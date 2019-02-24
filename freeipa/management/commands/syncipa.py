@@ -1,8 +1,7 @@
 import requests
 import json
 import getpass
-
-from pprint import pprint
+import logging
 
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth import get_user_model
@@ -18,6 +17,8 @@ class Command(BaseCommand):
         parser.add_argument('-p','--passwd', type=str, action='store', help='FreeIPA password', nargs='?', const='')
 
     def handle(self, *args, **options):
+        logger = logging.getLogger(__name__)
+
         with requests.Session() as s:
             if not options['user']: 
                 ipa_username = input('Username: ')
@@ -39,8 +40,8 @@ class Command(BaseCommand):
             r = s.post(ipa_url, headers=ipa_headers, data=ipa_login, verify=settings.IPA_AUTH_SERVER_SSL_VERIFY)
             
             if r.status_code != requests.codes.ok:
-                self.logger.error(r.text)
-                return None
+                logger.error(r.text)
+                exit(1)
 
             ipa_api_url = 'https://{}/ipa'.format(settings.IPA_AUTH_SERVER)
             ipa_session_url = '{}/session/json'.format(ipa_api_url)
@@ -62,12 +63,12 @@ class Command(BaseCommand):
             
             r = s.post(ipa_session_url, headers=ipa_headers, data=json.dumps(ipa_query), verify=settings.IPA_AUTH_SERVER_SSL_VERIFY)
             if r.status_code != requests.codes.ok:
-                print(r.text)
+                logger.error(r.text)
                 exit(1)
 
             result = r.json()['result']
 
-            print('user-find: Match {} users'.format(result['count']))
+            logger.info('user-find: Match {} users'.format(result['count']))
 
             UserModel = get_user_model()
 
@@ -80,7 +81,7 @@ class Command(BaseCommand):
 
                 if user_query.exists():
                     user = user_query[0]
-                    print('Update user: {}.'.format(user.username))
+                    logger.info('Update user: {}.'.format(user.username))
                     
                     updated = False
 
@@ -89,7 +90,7 @@ class Command(BaseCommand):
                         if user_info.get(ipa_field, None): 
                             if getattr(user, user_field) != user_info[ipa_field][0]:
                                 setattr(user, user_field, user_info[ipa_field][0])
-                                print('  Update field {} from "{}" to "{}"'.format(user_field, getattr(user, user_field), user_info[ipa_field][0]))
+                                logger.info('  Update field {} from "{}" to "{}"'.format(user_field, getattr(user, user_field), user_info[ipa_field][0]))
                                 updated = True
 
                     if settings.IPA_AUTH_UPDATE_USER_GROUPS:
@@ -97,21 +98,21 @@ class Command(BaseCommand):
                         for group_name in user_info['memberof_group']:
                             if not Group.objects.filter(name=group_name).exists():
                                 group = Group.objects.create(name=group_name)
-                                print('  Group "{}" created.'.format(group_name))
+                                logger.info('  Group "{}" created.'.format(group_name))
                             else:
                                 group = Group.objects.get(name=group_name)
                             
                             if group not in user_groups:
                                 user.groups.add(group)
-                                print('  Add user {} to group "{}"'.format(user.username, group))
+                                logger.info('  Add user {} to group "{}"'.format(user.username, group))
                     
                     if updated:
-                        print("User {} updated".format(user.username))
+                        logger.info("User {} updated".format(user.username))
                         user.save()
                         
                         update_count += 1
                 else:
-                    print('Create user: {}.'.format(uid))
+                    logger.info('Create user: {}.'.format(uid))
 
                     user = UserModel(username=uid)
                     # Update user fields 
@@ -119,7 +120,7 @@ class Command(BaseCommand):
                         if user_info.get(ipa_field, None): 
                             if getattr(user, user_field) != user_info[ipa_field][0]:
                                 setattr(user, user_field, user_info[ipa_field][0])
-                                print('  Set field {} to "{}"'.format(user_field, user_info[ipa_field][0]))
+                                logger.info('  Set field {} to "{}"'.format(user_field, user_info[ipa_field][0]))
 
                     user.save()
 
@@ -128,18 +129,18 @@ class Command(BaseCommand):
                         for group_name in user_info['memberof_group']:
                             if not Group.objects.filter(name=group_name).exists():
                                 group = Group.objects.create(name=group_name)
-                                print('  Group "{}" created.'.format(group_name))
+                                logger.info('  Group "{}" created.'.format(group_name))
                             else:
                                 group = Group.objects.get(name=group_name)
 
                             if group not in user.groups.all():
                                 user.groups.add(group)
-                                print('  Add user {} to group "{}"'.format(user.username, group))
+                                logger.info('  Add user {} to group "{}"'.format(user.username, group))
 
                             user.groups.add(group)
-                            print('  Add user {} to group "{}"'.format(user.username, group))
+                            logger.info('  Add user {} to group "{}"'.format(user.username, group))
                         
-                    print("User {} created".format(user.username))
+                    logger.info("User {} created".format(user.username))
 
 
 
