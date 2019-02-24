@@ -12,9 +12,11 @@ here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
+print(find_packages())
+
 setup(
     name='django-freeipa-auth-json',
-    version='0.1.0dev1',  
+    version='0.1.1dev1',  
     description='FreeIPA authentication for Django using FreeIPA JSON API',  
     long_description=long_description, 
     long_description_content_type='text/markdown', 
