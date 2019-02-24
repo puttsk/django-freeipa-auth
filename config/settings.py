@@ -127,6 +127,7 @@ logging.basicConfig(format="[%(asctime)s] %(levelname)s: %(message)s", datefmt="
 
 IPA_AUTH_SERVER = 'ipa.demo1.freeipa.org'
 IPA_AUTH_SERVER_SSL_VERIFY = True
-IPA_AUTH_SERVER_API_VERSION = '2.230'          
+IPA_AUTH_SERVER_API_VERSION = '2.230'         
+IPA_AUTH_AUTO_UPDATE_USER_INFO = True
 IPA_AUTH_UPDATE_USER_GROUPS = True 
 
