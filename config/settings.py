@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+import logging
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -122,6 +123,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-IPA_SERVER = 'ipa.demo1.freeipa.org'
-IPA_SERVER_SSL_VERIFY = True
-IPA_SERVER_API_VERSION = '2.230'
+logging.basicConfig(format="[%(asctime)s] %(levelname)s: %(message)s", datefmt="%d/%b/%Y %H:%M:%S", level=logging.INFO)
+
+IPA_AUTH_SERVER = 'ipa.demo1.freeipa.org'
+IPA_AUTH_SERVER_SSL_VERIFY = True
+IPA_AUTH_SERVER_API_VERSION = '2.230'          
+IPA_AUTH_UPDATE_USER_GROUPS = True 
+
