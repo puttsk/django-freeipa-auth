@@ -26,7 +26,7 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
-        'Software Development :: Libraries :: Python Modules'
+        'Topic :: Software Development :: Libraries :: Python Modules'
     ],
     keywords='django freeipa authentication', 
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
