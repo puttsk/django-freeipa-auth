@@ -3,8 +3,6 @@ import json
 import getpass
 import logging
 
-from pprint import pprint
-
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group

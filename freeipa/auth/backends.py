@@ -27,6 +27,9 @@ class AuthenticationBackend:
                 self.logger.error(r.text)
                 return None
 
+            # Check if user exists in Django database 
+            # If user exists, return user object. Updating user if IPA_AUTH_AUTO_UPDATE_USER_INFO is set. 
+            # If not, create a new user. 
             try:
                 user = self.user_model.objects.get(username=username)
                 self.logger.info('User {} logged in.'.format(username))
@@ -34,8 +37,7 @@ class AuthenticationBackend:
                 if settings.IPA_AUTH_AUTO_UPDATE_USER_INFO:
                     user_info = freeipa.query_user_info(s, username, logger=self.logger)
                     update_user_info(user, user_info, self.logger)
-
-            # User does not exists in django
+                    
             except self.user_model.DoesNotExist:
                 self.logger.info('User {} does not exist.'.format(username))
 
