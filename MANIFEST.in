@@ -1,3 +1,6 @@
+# Include freeipa command line
+recursive-include freeipa/management *.py
+
 # Include the README
 include *.md
 
