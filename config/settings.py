@@ -131,3 +131,9 @@ IPA_AUTH_SERVER_API_VERSION = '2.230'
 IPA_AUTH_AUTO_UPDATE_USER_INFO = True
 IPA_AUTH_UPDATE_USER_GROUPS = True 
 
+# Dictionary mapping FreeIPA field to Django user attribytes
+IPA_AUTH_FIELDS_MAP = {
+    'sn': 'last_name',
+    'givenname': 'first_name',
+    'mail': 'email',
+}
