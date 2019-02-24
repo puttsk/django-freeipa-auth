@@ -16,7 +16,7 @@ print(find_packages())
 
 setup(
     name='django-freeipa-auth-json',
-    version='0.1.1dev1',  
+    version='0.1.2dev1',  
     description='FreeIPA authentication for Django using FreeIPA JSON API',  
     long_description=long_description, 
     long_description_content_type='text/markdown', 
@@ -31,7 +31,7 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules'
     ],
     keywords='django freeipa authentication', 
-    packages=find_packages(exclude=['contrib', 'docs', 'tests']),
+    packages=find_packages(exclude=['contrib', 'docs', 'tests', 'config']),
     python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*, <4',
 
     project_urls={ 
