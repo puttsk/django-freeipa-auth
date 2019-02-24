@@ -4,10 +4,11 @@ import logging
 
 from pprint import pprint
 
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.db import transaction
+
+from .. import settings
 
 class AuthenticationBackend:
     def __init__(self):

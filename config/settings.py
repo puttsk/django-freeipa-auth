@@ -126,14 +126,3 @@ STATIC_URL = '/static/'
 logging.basicConfig(format="[%(asctime)s] %(levelname)s: %(message)s", datefmt="%d/%b/%Y %H:%M:%S", level=logging.INFO)
 
 IPA_AUTH_SERVER = 'ipa.demo1.freeipa.org'
-IPA_AUTH_SERVER_SSL_VERIFY = True
-IPA_AUTH_SERVER_API_VERSION = '2.230'         
-IPA_AUTH_AUTO_UPDATE_USER_INFO = True
-IPA_AUTH_UPDATE_USER_GROUPS = True 
-
-# Dictionary mapping FreeIPA field to Django user attribytes
-IPA_AUTH_FIELDS_MAP = {
-    'sn': 'last_name',
-    'givenname': 'first_name',
-    'mail': 'email',
-}

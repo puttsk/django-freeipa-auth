@@ -7,7 +7,8 @@ from pprint import pprint
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
-from django.conf import settings
+
+from ... import settings
 
 class Command(BaseCommand):
     help = 'Synchronizing data with FreeIPA server'
@@ -92,20 +93,23 @@ class Command(BaseCommand):
                                 updated = True
 
                     if settings.IPA_AUTH_UPDATE_USER_GROUPS:
+                        user_groups = user.groups.all()
                         for group_name in user_info['memberof_group']:
                             if not Group.objects.filter(name=group_name).exists():
                                 group = Group.objects.create(name=group_name)
                                 print('  Group "{}" created.'.format(group_name))
                             else:
                                 group = Group.objects.get(name=group_name)
-                            user.groups.add(group)
-                            print('  Add user {} to group "{}"'.format(user.username, group))
+                            
+                            if group not in user_groups:
+                                user.groups.add(group)
+                                print('  Add user {} to group "{}"'.format(user.username, group))
                     
                     if updated:
                         print("User {} updated".format(user.username))
                         user.save()
-                            
-                    update_count += 1
+                        
+                        update_count += 1
                 else:
                     print('Create user: {}.'.format(uid))
 
@@ -120,12 +124,18 @@ class Command(BaseCommand):
                     user.save()
 
                     if settings.IPA_AUTH_UPDATE_USER_GROUPS:
+                        user_groups = user.groups.all()
                         for group_name in user_info['memberof_group']:
                             if not Group.objects.filter(name=group_name).exists():
                                 group = Group.objects.create(name=group_name)
                                 print('  Group "{}" created.'.format(group_name))
                             else:
                                 group = Group.objects.get(name=group_name)
+
+                            if group not in user.groups.all():
+                                user.groups.add(group)
+                                print('  Add user {} to group "{}"'.format(user.username, group))
+
                             user.groups.add(group)
                             print('  Add user {} to group "{}"'.format(user.username, group))
                         
